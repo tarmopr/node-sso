@@ -1,0 +1,41 @@
+<h1>Login</h1>
+<form method="POST" action="/login">
+    <input type="text" id="username" name="username" placeholder="Username" value="username"/>
+    <input type="text" id="password" name="password" placeholder="Password" value="password"/>
+    <input id="login-btn" type="submit" value="Login"/>
+</form>
+
+<script src="dummy-sso.js"></script>
+<script src="main.js"></script>
+<script>
+
+// check for credentials and perform auto-login if possible
+var credentials = sso.getCredentials();
+
+if (credentials !== null) {
+    login(credentials.username, credentials.password, function(success) {
+        if (success) {
+            window.location.reload();
+        } else {
+            throw new Error('Login failed');
+        }
+    });
+}
+
+// handle login
+document.querySelector('#login-btn').addEventListener('click', function(e) {
+    var username = document.querySelector('#username').value,
+            password = document.querySelector('#password').value;
+
+    login(username, password, function(success) {
+        if (success) {
+            sso.storeCredentials(username, password);
+
+            window.location.reload();
+        }
+    });
+
+    e.preventDefault();
+});
+
+</script>

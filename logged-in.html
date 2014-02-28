@@ -1,0 +1,26 @@
+<h1>Logged in: {username}</h1>
+<p><strong>Session id:</strong> {sessionId}</p>
+<p><strong>Username:</strong> {username}</p>
+<p><strong>Password:</strong> {password}</p>
+<p><a id="logout-btn" href="/logout">Log out</a></p>
+</form>
+
+<script src="dummy-sso.js"></script>
+<script src="main.js"></script>
+<script>
+
+// handle logout
+document.querySelector('#logout-btn').addEventListener('click', function(e) {
+    logout(function(success) {
+        if (!success) {
+            throw new Error('Logging out failed');
+        }
+
+        sso.removeCredentials();
+        window.location.reload();
+    });
+
+    e.preventDefault();
+});
+
+</script>
