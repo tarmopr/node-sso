@@ -16,8 +16,13 @@ document.querySelector('#logout-btn').addEventListener('click', function(e) {
             throw new Error('Logging out failed');
         }
 
-        sso.removeCredentials();
-        window.location.reload();
+        sso.removeCredentials(function(result) {
+        
+        	if (result)
+        		window.location.reload();
+        	else
+        		alert("Error removing credentials from device!");
+        });
     });
 
     e.preventDefault();

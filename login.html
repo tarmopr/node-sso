@@ -10,16 +10,20 @@
 <script>
 
 // check for credentials and perform auto-login if possible
-var credentials = sso.getCredentials();
 
-if (credentials !== null) {
-    login(credentials.username, credentials.password, function(success) {
-        if (success) {
-            window.location.reload();
-        } else {
-            throw new Error('Login failed');
-        }
-    });
+function callAfterLoad() {
+
+	sso.getCredentials(function(credentials) {
+		if (credentials !== null) {
+    		login(credentials.username, credentials.password, function(success) {
+        		if (success) {
+            		window.location.reload();
+        		} else {
+            		throw new Error('Login failed');
+        		}
+    		});
+		}
+	});
 }
 
 // handle login
@@ -29,9 +33,12 @@ document.querySelector('#login-btn').addEventListener('click', function(e) {
 
     login(username, password, function(success) {
         if (success) {
-            sso.storeCredentials(username, password);
-
-            window.location.reload();
+            sso.storeCredentials(username, password, function(result) {
+				if (result)
+            		window.location.reload();
+            	else 
+            		alert("Error storing credentials on device!");
+            });
         }
     });
 
