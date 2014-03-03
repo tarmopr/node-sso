@@ -3,25 +3,26 @@ var DummySSO = function() {
 
 };
 
-DummySSO.prototype.getCredentials = function() {
+DummySSO.prototype.getCredentials = function(callback) {
     if (typeof(window.localStorage.credentials) === 'undefined') {
-        return null;
+        callback(null);
     }
 
-    return JSON.parse(window.localStorage.credentials);
+    var credentials = JSON.parse(window.localStorage.credentials);
+    callback(credentials);
 };
 
-DummySSO.prototype.storeCredentials = function(username, password) {
+DummySSO.prototype.storeCredentials = function(username, password, callback) {
     window.localStorage.credentials = JSON.stringify({
         username: username,
         password: password
     });
 
-    return true;
+    callback(true);
 };
 
-DummySSO.prototype.removeCredentials = function() {
+DummySSO.prototype.removeCredentials = function(callback) {
     window.localStorage.removeItem('credentials');
 
-    return true;
+    callback(true);
 };
