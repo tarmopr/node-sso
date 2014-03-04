@@ -5,19 +5,29 @@
 <p><a id="logout-btn" href="/logout">Log out</a></p>
 </form>
 
-<script src="dummy-sso.js"></script>
 <script src="main.js"></script>
 <script>
 
 // handle logout
 document.querySelector('#logout-btn').addEventListener('click', function(e) {
-    logout(function(success) {
-        if (!success) {
+    console.log('logging out');
+
+    logout(function(logoutSuccess) {
+        console.log('logout result', logoutSuccess);
+
+        if (!logoutSuccess) {
             throw new Error('Logging out failed');
         }
 
-        sso.removeCredentials();
-        window.location.reload();
+        sso.removeCredentials(function(removeCredentialsSuccess) {
+            console.log('remove credentials result', removeCredentialsSuccess);
+
+        	if (removeCredentialsSuccess) {
+        		window.location.reload();
+            } else {
+                throw new Error('Failed to remove credentials');
+            }
+        });
     });
 
     e.preventDefault();

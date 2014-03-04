@@ -5,33 +5,46 @@
     <input id="login-btn" type="submit" value="Login"/>
 </form>
 
-<script src="dummy-sso.js"></script>
 <script src="main.js"></script>
 <script>
 
-// check for credentials and perform auto-login if possible
-var credentials = sso.getCredentials();
+// this is called when platform specific code has been loaded and SSO interface can be requested for credentials
+function ssoReady() {
+    console.log('SSO ready');
 
-if (credentials !== null) {
-    login(credentials.username, credentials.password, function(success) {
-        if (success) {
-            window.location.reload();
-        } else {
-            throw new Error('Login failed');
-        }
-    });
+    // check for credentials and perform auto-login if possible
+	sso.getCredentials(function(credentials) {
+        console.log('credentials', credentials);
+
+		if (credentials !== null) {
+    		login(credentials.username, credentials.password, function(success) {
+        		if (success) {
+            		window.location.reload();
+        		} else {
+            		throw new Error('Login failed');
+        		}
+    		});
+		}
+	});
 }
 
-// handle login
+// handle login button press
 document.querySelector('#login-btn').addEventListener('click', function(e) {
     var username = document.querySelector('#username').value,
-            password = document.querySelector('#password').value;
+        password = document.querySelector('#password').value;
+
+    console.log('logging in', username, password);
 
     login(username, password, function(success) {
-        if (success) {
-            sso.storeCredentials(username, password);
+        console.log('logging result', success);
 
-            window.location.reload();
+        if (success) {
+            sso.storeCredentials(username, password, function(result) {
+				if (result)
+            		window.location.reload();
+            	else 
+            		alert("Error storing credentials on device!");
+            });
         }
     });
 
